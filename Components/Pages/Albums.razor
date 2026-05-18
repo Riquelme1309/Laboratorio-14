@@ -1,0 +1,45 @@
+﻿@page "/albums"
+@inject AlbumService AlbumSvc
+@using Laboratorio__14.Models
+@using Laboratorio__14.Services
+
+<h3>🎵 Álbumes</h3>
+
+<a href="/album/nuevo" class="btn btn-primary mb-3">+ Nuevo Álbum</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Artista</th>
+            <th>Fecha</th>
+            <th>Canciones</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var album in AlbumSvc.GetAll())
+        {
+            <tr>
+                <td>@album.Titulo</td>
+                <td>@album.Artista</td>
+                <td>@album.FechaPublicacion.ToShortDateString()</td>
+                <td>@album.Canciones.Count</td>
+                <td>
+                    <a href="/album/editar/@album.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <button class="btn btn-sm btn-danger"
+                            @onclick="() => Eliminar(album.Id)">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    void Eliminar(int id)
+    {
+        AlbumSvc.Delete(id);
+    }
+}

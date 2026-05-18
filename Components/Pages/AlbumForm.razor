@@ -1,0 +1,82 @@
+﻿@page "/album/nuevo"
+@page "/album/editar/{Id:int}"
+@inject AlbumService AlbumSvc
+@inject NavigationManager Nav
+@using Laboratorio__14.Models
+@using Laboratorio__14.Services
+
+<h3>@(Id == 0 ? "Nuevo Álbum" : "Editar Álbum")</h3>
+
+<EditForm Model="album" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Título</label>
+        <InputText class="form-control" @bind-Value="album.Titulo" />
+    </div>
+    <div class="mb-3">
+        <label>Artista</label>
+        <InputText class="form-control" @bind-Value="album.Artista" />
+    </div>
+    <div class="mb-3">
+        <label>Fecha de Publicación</label>
+        <InputDate class="form-control" @bind-Value="album.FechaPublicacion" />
+    </div>
+
+    <h5>Canciones</h5>
+    @foreach (var cancion in album.Canciones)
+    {
+        <div class="row mb-2">
+            <div class="col">
+                <InputText class="form-control" placeholder="Nombre"
+                           @bind-Value="cancion.Nombre" />
+            </div>
+            <div class="col">
+                <InputText class="form-control" placeholder="Artista"
+                           @bind-Value="cancion.Artista" />
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-danger"
+                        @onclick="() => album.Canciones.Remove(cancion)">
+                    ✕
+                </button>
+            </div>
+        </div>
+    }
+
+    <button type="button" class="btn btn-secondary mb-3"
+            @onclick="AgregarCancion">
+        + Canción
+    </button>
+
+    <br />
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="/albums" class="btn btn-secondary ms-2">Cancelar</a>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    Album album = new() { FechaPublicacion = DateTime.Today };
+
+    protected override void OnParametersSet()
+    {
+        if (Id != 0)
+        {
+            var existente = AlbumSvc.GetById(Id);
+            if (existente != null) album = existente;
+        }
+    }
+
+    void AgregarCancion() =>
+        album.Canciones.Add(new Cancion { Artista = album.Artista });
+
+    void Guardar()
+    {
+        if (Id == 0)
+            AlbumSvc.Add(album);
+        else
+            AlbumSvc.Update(album);
+
+        Nav.NavigateTo("/albums");
+    }
+}

@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddSingleton<Laboratorio__14.Services.AlbumService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

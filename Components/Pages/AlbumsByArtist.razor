@@ -1,0 +1,45 @@
+﻿@page "/albums/artista"
+@inject AlbumService AlbumSvc
+@using Laboratorio__14.Models
+@using Laboratorio__14.Services
+
+<h3>🔍 Buscar por Artista</h3>
+
+<div class="input-group mb-3" style="max-width:400px">
+    <InputText class="form-control" placeholder="Nombre del artista..."
+               @bind-Value="busqueda" />
+    <button class="btn btn-primary" @onclick="Buscar">Buscar</button>
+</div>
+
+@if (resultados != null)
+{
+    @if (!resultados.Any())
+    {
+        <p>No se encontraron álbumes para <strong>@busqueda</strong>.</p>
+    }
+    else
+    {
+        @foreach (var album in resultados)
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>@album.Titulo</strong> — @album.Artista
+                    <span class="text-muted ms-2">(@album.FechaPublicacion.Year)</span>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var c in album.Canciones)
+                    {
+                        <li class="list-group-item">🎵 @c.Nombre</li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+}
+
+@code {
+    string busqueda = "";
+    List<Album>? resultados;
+
+    void Buscar() => resultados = AlbumSvc.GetByArtista(busqueda);
+}

@@ -1,6 +1,6 @@
 ﻿namespace Laboratorio__14.Models
 {
-    public class Albun
+    public class Album
     {
         public int Id { get; set; }
         public string Titulo { get; set; } = string.Empty;
